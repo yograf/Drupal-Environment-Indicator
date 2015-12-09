@@ -5,4 +5,3 @@ chrome.storage.sync.get(url, function(data) {
     el.style.color = data[url].foreground;
   })
 });
-

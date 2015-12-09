@@ -1,3 +1,4 @@
+
 // Show drupal icon when needed.
 chrome.runtime.onInstalled.addListener(function() {
   chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
@@ -42,20 +43,12 @@ chrome.runtime.onMessage.addListener(
     }, function(tabs) {
         var tab = tabs[0];
         var host = getHost(tab.url);
-        chrome.storage.sync.get({"drupal_environment_urls":[]}, function(obj) {
-          var newSite = true;
-          for (var i=0; i < obj.drupal_environment_urls.length; i++) {
-            if (host === obj.drupal_environment_urls[i].hostSuffix) {
-              newSite = false;
-              break;
-            }
-          }
-          if (newSite) {
-            obj.drupal_environment_urls.push({hostSuffix: host});
-            chrome.storage.sync.set({"drupal_environment_urls": obj.drupal_environment_urls}, function() {
-              chrome.webNavigation.onCommitted.removeListener(change);
-              chrome.webNavigation.onCommitted.addListener(change, {url: obj.drupal_environment_urls });
-            });
+        chrome.storage.sync.get({host: false}, function(obj) {
+          if (!obj[host]) {
+          var t = {};
+          var q = [{hostSuffix: host}];
+          t["url"] = q;
+            chrome.webNavigation.onDOMContentLoaded.addListener(change, t);
           }
         });
         var domain = {};

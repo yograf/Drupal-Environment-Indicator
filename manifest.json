@@ -1,7 +1,7 @@
 {
 	"name": "Drupal Environment Indicator",
   "description": "Let you change your admin menu color for every site.",
-	"version": "1.5",
+	"version": "1.7",
 	"author": "Yogev Priel",
 	"manifest_version": 2,
 	"minimum_chrome_version": "20",
