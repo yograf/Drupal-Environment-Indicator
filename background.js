@@ -1,6 +1,14 @@
 
 // Show drupal icon when needed.
 chrome.runtime.onInstalled.addListener(function() {
+  chrome.storage.sync.get(null, function(data){
+    for (var i in data) {
+      var t = {};
+      var q = [{hostSuffix: i}];
+      t["url"] = q;
+      chrome.webNavigation.onCompleted.addListener(change, t);
+    }
+  });
   chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
     chrome.declarativeContent.onPageChanged.addRules([{
       conditions: [
@@ -48,7 +56,7 @@ chrome.runtime.onMessage.addListener(
           var t = {};
           var q = [{hostSuffix: host}];
           t["url"] = q;
-            chrome.webNavigation.onDOMContentLoaded.addListener(change, t);
+          chrome.webNavigation.onCompleted.addListener(change, t);
           }
         });
         var domain = {};
