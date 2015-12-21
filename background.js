@@ -1,6 +1,5 @@
-
-// Show drupal icon when needed.
 chrome.runtime.onInstalled.addListener(function() {
+  // Get settings from before.
   chrome.storage.sync.get(null, function(data){
     for (var i in data) {
       var t = {};
@@ -9,6 +8,8 @@ chrome.runtime.onInstalled.addListener(function() {
       chrome.webNavigation.onCompleted.addListener(change, t);
     }
   });
+
+  // Show drupal icon when needed.
   chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
     chrome.declarativeContent.onPageChanged.addRules([{
       conditions: [
@@ -34,9 +35,9 @@ var host =  function(tab) {
 }
 
 var change = function(details) {
-    if (!details.frameId) {
-      host(details);
-    }
+  if (!details.frameId) {
+    host(details);
+  }
 };
 
 chrome.runtime.onMessage.addListener(
@@ -49,23 +50,23 @@ chrome.runtime.onMessage.addListener(
       windowType: "normal",
       lastFocusedWindow: true
     }, function(tabs) {
-        var tab = tabs[0];
-        var host = getHost(tab.url);
-        chrome.storage.sync.get({host: false}, function(obj) {
-          if (!obj[host]) {
+      var tab = tabs[0];
+      var host = getHost(tab.url);
+      chrome.storage.sync.get({host: false}, function(obj) {
+        if (!obj[host]) {
           var t = {};
           var q = [{hostSuffix: host}];
           t["url"] = q;
           chrome.webNavigation.onCompleted.addListener(change, t);
-          }
-        });
-        var domain = {};
-        domain[host] = request;
-        chrome.storage.sync.set(domain, function() {
-          chrome.tabs.executeScript(tab.id, {code: "var url = '" +  host + "'"}, function() {
-            chrome.tabs.executeScript(tab.id, {file: "change.js"});
-          });
+        }
+      });
+      var domain = {};
+      domain[host] = request;
+      chrome.storage.sync.set(domain, function() {
+        chrome.tabs.executeScript(tab.id, {code: "var url = '" +  host + "'"}, function() {
+          chrome.tabs.executeScript(tab.id, {file: "change.js"});
         });
       });
+    });
   });
 
